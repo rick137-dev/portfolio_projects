@@ -215,7 +215,7 @@ export default function GridSearch() {
     setBusy(false);
   }
 
-  // Dispatch to the selected algorithm
+  
   const run = () => {
     if (busy || !algo) return;
     algo === "bfs"
@@ -243,17 +243,27 @@ export default function GridSearch() {
     mouseDown.current = true;
   };
 
-  const onEnter = (r, c) => {
-    if (!mouseDown.current || busy) return;
-    const k = key(r, c);
-    if (drag === "start") setStart([r, c]);
-    else if (drag === "goal") setGoal([r, c]);
-    else if (drag === "wall")
-      setWalls((w) => {
-        const s = new Set(w).add(k);
-        return s;
-      });
-  };
+const onEnter = (r, c) => {
+  if (!mouseDown.current || busy) return;
+  const k = key(r, c);
+
+  if (drag === "start") {
+    setStart([r, c]);
+  } else if (drag === "goal") {
+    setGoal([r, c]);
+
+ } else if (
+   drag === "wall" &&       
+   k !== key(...start) &&  
+   k !== key(...goal)       
+ ) {
+   setWalls((w) => {
+     const s = new Set(w).add(k);
+     return s;
+   });
+ }
+};
+
 
   const onUp = () => {
     mouseDown.current = false;
@@ -334,7 +344,7 @@ export default function GridSearch() {
                     {k === key(...start) ? (
                       <div className="w-4 h-4 bg-red-600 rounded-full" />
                     ) : k === key(...goal) ? (
-                      <div className="text-black font-extrabold text-[10px]">X</div>
+                      <div className="text-black font-extrabold text-[19px]">X</div>
                     ) : null}
                   </div>
                 );
@@ -390,7 +400,7 @@ export default function GridSearch() {
               {descriptions[algo]}
             </pre>
           ) : (
-            <p>Select an algorithm to see its description.</p>
+            <p>You can move the circle (start node) and cross (end node) to your liking, and click around the grid to place walls. Then just select the algorithm, adjust the speed and let the visualization begin!</p>
           )}
         </div>
       </div>
